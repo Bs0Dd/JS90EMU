@@ -1,0 +1,270 @@
+function uniqueFromTwoArrays(arr1, arr2) {
+	var output = [];
+	for(var x = 0; x < arr1.length; x++)
+		if(output.indexOf(arr1[x]==-1)) output.push(arr1[x]);
+
+	for(var x = 0; x < arr2.length; x++)
+		if(output.indexOf(arr2[x]==-1)) output.push(arr2[x]);
+
+	return output;
+}
+
+function keyCode() {
+	return (keyPressed in keyTable)?keyTable[keyPressed]:keyTable["nokey"];
+}
+
+var keyboardMapping = {
+	nokey: 0x00,
+
+	n1:0x31,
+	n2:0x32,
+	n3:0x33,
+	n4:0x34,
+	n5:0x35,
+	cln:0x3B,
+	scln:0xDE,
+
+	n6:0x36,
+	n7:0x37,
+	n8:0x38,
+	n9:0x39,
+	n0:0x30,
+	sls:0xBF,
+	min:0xAD,
+
+	a:0x41,
+	b:0x42,
+	w:0x57,
+	g:0x47,
+	d:0x44,
+	e:0x45,
+	v:0x56,
+	z:0x5A,
+
+	i:0x49,
+	j:0x4A,
+	k:0x4B,
+	l:0x4C,
+	m:0x4D,
+	n:0x4E,
+	o:0x4F,
+	p:0x50,
+
+	r:0x52,
+	s:0x53,
+	t:0x54,
+	u:0x55,
+	f:0x46,
+	h:0x48,
+	c:0x43,
+	us:0x2E,
+
+	so:0xDB,
+	sc:0xDD,
+	x:0x58,
+	y:0x59,
+	ul:0x3D,
+	bsl:0xDC,
+	at:0xC0,
+	q:0x51,
+
+	su:0x11,
+	up:0x26,
+	left:0x25,
+	com:0xBC,
+	dot:0xBE,
+	right:0x27,
+	zb:0x08,
+	vk:0x0D,
+
+	rl:0x1B,
+	down:0x28,
+	doe:0x22,
+	spc:0x20,
+	upe:0x21,
+	fk:0x2D,
+	vn:0x10,
+
+	off: 0x24,
+	on: 0x23,
+};
+
+var numpadKeyboardMapping = {
+	n1:0x61,
+	n2:0x62,
+	n3:0x63,
+	n4:0x64,
+	n5:0x65,
+	n6:0x66,
+	n7:0x67,
+	n8:0x68,
+	n9:0x69,
+	n0:0x60,
+
+	dot:0x6C,
+}
+
+var gamesMapping = {
+	doe:0x25,
+	dot:0x26,
+	upe:0x27,
+	spc:0x28
+}
+
+var keyTable = {
+	nokey: 0x00,
+	off: 0x00,
+	on: 0x00,
+
+	n1:0x23,
+	n2:0x43,
+	n3:0x63,
+	n4:0x83,
+	n5:0xA3,
+	cln:0xC3,
+	scln:0xE3,
+
+	n6:0x27,
+	n7:0x47,
+	n8:0x67,
+	n9:0x87,
+	n0:0xA7,
+	sls:0xC7,
+	min:0xE7,
+
+	a:0x0B,
+	b:0x2B,
+	w:0x4B,
+	g:0x6B,
+	d:0x8B,
+	e:0xAB,
+	v:0xCB,
+	z:0xEB,
+
+	i:0x0F,
+	j:0x2F,
+	k:0x4F,
+	l:0x6F,
+	m:0x8F,
+	n:0xAF,
+	o:0xCF,
+	p:0xEF,
+
+	r:0x13,
+	s:0x33,
+	t:0x53,
+	u:0x73,
+	f:0x93,
+	h:0xB3,
+	c:0xD3,
+	us:0xF3,
+
+	so:0x17,
+	sc:0x37,
+	x:0x57,
+	y:0x77,
+	ul:0x97,
+	bsl:0xB7,
+	at:0xD7,
+	q:0xF7,
+
+	su:0x1B,
+	up:0x3B,
+	left:0x5B,
+	com:0x7B,
+	dot:0x9B,
+	right:0xBB,
+	zb:0xDB,
+	vk:0xFB,
+
+	rl:0x1F,
+	down:0x3F,
+	doe:0x5F,
+	spc:0x7F,
+	upe:0xBF,
+	fk:0xDF,
+	vn:0xFF
+};
+
+
+
+var faceKeys = {
+
+	n1:{type:0, posCode:0x00},
+	n2:{type:0, posCode:0x01},
+	n3:{type:0, posCode:0x02},
+	n4:{type:0, posCode:0x03},
+	n5:{type:0, posCode:0x04},
+	cln:{type:0, posCode:0x05},
+	scln:{type:0, posCode:0x06},
+
+	n6:{type:0, posCode:0x10},
+	n7:{type:0, posCode:0x11},
+	n8:{type:0, posCode:0x12},
+	n9:{type:0, posCode:0x13},
+	n0:{type:0, posCode:0x14},
+	sls:{type:0, posCode:0x15},
+	min:{type:0, posCode:0x16},
+
+	off:{type:2, posCode:0x00},
+	on:{type:2, posCode:0x10},
+
+	a:{type:1, posCode:0x00},
+	b:{type:1, posCode:0x01},
+	w:{type:1, posCode:0x02},
+	g:{type:1, posCode:0x03},
+	d:{type:1, posCode:0x04},
+	e:{type:1, posCode:0x05},
+	v:{type:1, posCode:0x06},
+	z:{type:1, posCode:0x07},
+
+	i:{type:1, posCode:0x10},
+	j:{type:1, posCode:0x11},
+	k:{type:1, posCode:0x12},
+	l:{type:1, posCode:0x13},
+	m:{type:1, posCode:0x14},
+	n:{type:1, posCode:0x15},
+	o:{type:1, posCode:0x16},
+	p:{type:1, posCode:0x17},
+
+	r:{type:1, posCode:0x20},
+	s:{type:1, posCode:0x21},
+	t:{type:1, posCode:0x22},
+	u:{type:1, posCode:0x23},
+	f:{type:1, posCode:0x24},
+	h:{type:1, posCode:0x25},
+	c:{type:1, posCode:0x26},
+	us:{type:1, posCode:0x27},
+
+	so:{type:1, posCode:0x30},
+	sc:{type:1, posCode:0x31},
+	x:{type:1, posCode:0x32},
+	y:{type:1, posCode:0x33},
+	ul:{type:1, posCode:0x34},
+	bsl:{type:1, posCode:0x35},
+	at:{type:1, posCode:0x36},
+	q:{type:1, posCode:0x37},
+
+	su:{type:1, posCode:0x40},
+	up:{type:1, posCode:0x41},
+	left:{type:1, posCode:0x42},
+	com:{type:1, posCode:0x43},
+	dot:{type:1, posCode:0x44},
+	right:{type:1, posCode:0x45},
+	zb:{type:1, posCode:0x46},
+	vk:{type:1, posCode:0x47},
+
+	rl:{type:1, posCode:0x50},
+	down:{type:1, posCode:0x51},
+	doe:{type:1, posCode:0x52},
+	spc:{type:1, posCode:0x53, doubleWidth:true},
+	upe:{type:1, posCode:0x55},
+	fk:{type:1, posCode:0x56},
+	vn:{type:1, posCode:0x57}
+};
+
+var blockTypes = [
+	{off_x:526, mul_x:35, off_y:35, mul_y:33},
+	{off_x:491, mul_x:35, off_y:103, mul_y:31},
+	{off_x:491, mul_x:35, off_y:37, mul_y:33},
+];
