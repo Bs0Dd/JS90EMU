@@ -62,13 +62,13 @@ CPU.prototype.access = function(addr,writeVal,isByte) {
 		switch(addr) {
 			case 0xE818:
 			case 0xE81E:
-				return UrRd();
+				return DockCmdRd();
 			case 0xE81A:
 				return SYREG1 & 0xFFFF;
 			case 0xE81C:
 				return SYREG2 & 0xFFFF;
 			case 0xE880:
-				return RbRd();
+				return DockStatRd();
 			default: return this.readCallback(addr)|(isByte?0:this.readCallback(addr+1)<<8);
 		}
 	} else {
@@ -77,7 +77,7 @@ CPU.prototype.access = function(addr,writeVal,isByte) {
 		switch(addr) {
 			case 0xE818:
 			case 0xE81E:
-				return UrWr(writeVal);
+				return DockCmdWr(writeVal);
 			case 0xE81A: {
 				SYREG1 = writeVal & 0xFFFF;
 				return 
@@ -93,7 +93,7 @@ CPU.prototype.access = function(addr,writeVal,isByte) {
 				return LcdWr(addr-0xE800, writeVal);
 			}
 			case 0xE880:
-				return RbWr(writeVal);
+				return DockStatWr(writeVal);
 			default: {
 				this.writeCallback(addr,writeVal&0xFF);
 				if(!isByte) this.writeCallback(addr+1,(writeVal>>8)&0xFF);

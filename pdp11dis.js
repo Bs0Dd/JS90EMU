@@ -141,12 +141,12 @@ var PDP11_REGS = [
 //{ fetch a word from the memory, advance the location counter }
 function FetchWord() {
     var word; 
-    if (((RB_CFG & (1 << 13)) != 0)&&(DISADDR>=0x4000)&&(DISADDR<0x8000)) { // 92 ROM access
-        if (((RB_CFG & (1 << 12)) == 0) && ((RB_CFG & (1 << 11)) == 0)) { // Bank 1
+    if (((M92_STAT & (1 << 13)) != 0)&&(DISADDR>=0x4000)&&(DISADDR<0x8000)) { // 92 ROM access
+        if (((M92_STAT & (1 << 12)) == 0) && ((M92_STAT & (1 << 11)) == 0)) { // Bank 1
             //console.log("D-ACB1");
             word = (((ROM92_bank1[DISADDR-ROTSTA+1] & 0xFF) << 8) | (ROM92_bank1[DISADDR-ROTSTA] & 0xFF));
         }
-        else if (((RB_CFG & (1 << 12)) == 0) && ((RB_CFG & (1 << 11)) != 0)) { // Bank 2
+        else if (((M92_STAT & (1 << 12)) == 0) && ((M92_STAT & (1 << 11)) != 0)) { // Bank 2
             //console.log("D-ACB2")
             word = (((ROM92_bank2[DISADDR-ROTSTA+1] & 0xFF) << 8) | (ROM92_bank2[DISADDR-ROTSTA] & 0xFF));
         }
@@ -172,13 +172,13 @@ function FetchWord() {
 }
 
 function StoreWord(x) {
-    if (((RB_CFG & (1 << 13)) != 0)&&(DISADDR>=0x4000)&&(DISADDR<0x8000)) { // 92 ROM access
-        if (((RB_CFG & (1 << 12)) == 0) && ((RB_CFG & (1 << 11)) == 0)) { // Bank 1
+    if (((M92_STAT & (1 << 13)) != 0)&&(DISADDR>=0x4000)&&(DISADDR<0x8000)) { // 92 ROM access
+        if (((M92_STAT & (1 << 12)) == 0) && ((M92_STAT & (1 << 11)) == 0)) { // Bank 1
             //console.log("DW-ACB1");
             ROM92_bank1[DISADDR-ROTSTA+1] = (x>>8) & 0xFF;
             ROM92_bank1[DISADDR-ROTSTA] = x & 0xFF;
         }
-        else if (((RB_CFG & (1 << 12)) == 0) && ((RB_CFG & (1 << 11)) != 0)) { // Bank 2
+        else if (((M92_STAT & (1 << 12)) == 0) && ((M92_STAT & (1 << 11)) != 0)) { // Bank 2
             //console.log("DW-ACB2")
             ROM92_bank2[DISADDR-ROTSTA+1] = (x>>8) & 0xFF;
             ROM92_bank2[DISADDR-ROTSTA] = x & 0xFF;

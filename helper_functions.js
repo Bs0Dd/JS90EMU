@@ -104,7 +104,7 @@ function startEmu() {
 	RtcInit();
 	IoInit();
 	SmpInit();
-	RbInit(); 
+	DockInit(); 
 
 	LCD.timerCallback = function () {
 		MK85CPU.steps = 1;
@@ -142,13 +142,13 @@ function glueCPU() {
 		if (addr >= 0xE800 && addr <= 0xEBFF) { //TRAP 4 on real MK90
 			MK85CPU.flag_halt = true;
 		}
-		else if (((RB_CFG & (1 << 13)) != 0)&&(addr>=0x4000)&&(addr<0x8000)) { // 92 ROM access
+		else if (((M92_STAT & (1 << 13)) != 0)&&(addr>=0x4000)&&(addr<0x8000)) { // 92 ROM access
 			
-			if (((RB_CFG & (1 << 12)) == 0) && ((RB_CFG & (1 << 11)) == 0)) { // Bank 1
+			if (((M92_STAT & (1 << 12)) == 0) && ((M92_STAT & (1 << 11)) == 0)) { // Bank 1
 				//console.log("ACB1");
 				return ROM92_bank1[addr&0x3FFF];
 			}
-			else if (((RB_CFG & (1 << 12)) == 0) && ((RB_CFG & (1 << 11)) != 0)) { // Bank 2
+			else if (((M92_STAT & (1 << 12)) == 0) && ((M92_STAT & (1 << 11)) != 0)) { // Bank 2
 				//console.log("ACB2")
 				return ROM92_bank2[addr&0x3FFF];
 			}
