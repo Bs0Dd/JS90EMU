@@ -12,8 +12,7 @@ CPU.prototype.execHALT = function(code) {
 	this.reg_u16[6] -= 2;
 	this.access(this.reg_u16[6], PC, false);
 	
-	//var loc = 0x0078|((this.psw&this.flags.H)?(this.sel&0xff00):0);
-	var loc = 0xE002; // 160002, vector in the "System ROM" zone (used by BASIC v2.0)
+	var loc = TRAP_HALT; // 160002, vector in the "System ROM" zone (used by BASIC v2.0)
 	/* jumping to address */
 	this.reg_u16[7] = this.access(loc, null, false);
 	this.psw = this.access(loc+2, null, false); // | this.flags.H;

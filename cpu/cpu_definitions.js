@@ -7,14 +7,13 @@ CPU.prototype.vectors = {
     TRAP_ACLO             : 0x0014,
     TRAP_EMT              : 0x0018,
     TRAP_TRAP             : 0x001C,
-    TRAP_EVNT             : 0x0040, /* 0x0020 or 0x0040?*/
-    TRAP_HALT             : 0x0078,
+    TRAP_EVNT             : 0x0040,
+    TRAP_HALT             : 0xE002,
     TRAP_WIR              : 0x00A8,
 
     VIRQ_C0               : 0x00C0,
     VIRQ_C4               : 0x00C4,
     VIRQ_C8               : 0x00C8,
-    HALT_I                : 0xE002
 };
 
 CPU.prototype.flags = {
