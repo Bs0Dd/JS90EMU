@@ -1,6 +1,6 @@
 CPU.prototype.execVector = function() {
 	console.log("Interrupt, vector address:", this.vector.toString(16));
-	this.vector |= (this.psw&this.flags.H)?(this.sel&0xff00):0;
+	//this.vector |= (this.psw&this.flags.H)?(this.sel&0xff00):0; no SEL in MK90
 	try {
 		/* saving values to stack */
 		var PSW = this.psw;

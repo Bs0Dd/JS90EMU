@@ -1,8 +1,5 @@
 CPU.prototype.execHALT = function(code) {
-	// this.cpc = this.reg_u16[7];
-	// this.cps = this.psw;
-
-	//Upon entering the HALT mode the PSW and the PC registers are stored on the
+	//HALT vector stores the PSW and the PC registers on the
 	//system stack instead of special registers, unlike in the 1801VM1 or 1801VM2 processors.
 
 	console.log("HALT op, PC =", this.reg_u16[7].toString(16), ", PSW =",this.psw.toString(16));
@@ -16,10 +13,10 @@ CPU.prototype.execHALT = function(code) {
 	this.access(this.reg_u16[6], PC, false);
 	
 	//var loc = 0x0078|((this.psw&this.flags.H)?(this.sel&0xff00):0);
-	var loc = 0x0004;
+	var loc = 0xE002; // 160002, vector in the "System ROM" zone (used by BASIC v2.0)
 	/* jumping to address */
 	this.reg_u16[7] = this.access(loc, null, false);
-	this.psw = this.access(loc+2, null, false) | this.flags.H;
+	this.psw = this.access(loc+2, null, false); // | this.flags.H;
 	return CPU.prototype.execCode;
 };
 

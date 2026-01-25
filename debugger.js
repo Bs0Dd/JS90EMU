@@ -659,7 +659,11 @@ function debugSetRegV() {
 
 function debugSetRamV() {
     const ramgo = document.getElementById("ramgo");
+    const ramcha = document.getElementById("ramcha");
+    const ramch = document.getElementById("ramch");
     ramgo.maxLength = RAMOCT ? 6 : 4;
+    ramcha.maxLength = ramgo.maxLength
+    ramch.maxLength = ramgo.maxLength
     ramgo.value = HexOrOct((ramgo.value == "") ? 0 : parseInt(ramgo.value, (RAMOCT ? 16 : 8)), RAMOCT);
     debugDrawRamAddr(true);
 }

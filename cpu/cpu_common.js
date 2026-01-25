@@ -23,8 +23,6 @@ function CPU() {
     
     this.psw            = 0x00E0;
     this.pc             = 0xF600;	// to save immediate R7 while reading multiple word instructions
-    this.cpc            = 0x0000;
-    this.cps            = 0x0000;
     this.opcode         = 0x0000;
 
 	this.reg_u16[7] = this.pc;
