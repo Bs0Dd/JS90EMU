@@ -141,7 +141,7 @@ function glueCPU() {
 	MK85CPU.readCallback = function (addr) {
 		if ((addr >= 0xE800 && addr <= 0xEBFF) || (addr >= 0xFE00 && addr <= 0xFFFF)) { //TRAP 4 on real MK90
 			console.log("Non-existent register read", addr.toString(8))
-			MK85CPU.flag_halt = true;
+			throw MK85CPU.vectors.TRAP_BUS_ERROR
 		}
 		else if (((M92_STAT & (1 << 13)) != 0)&&(addr>=0x4000)&&(addr<0x8000)) { // 92 ROM access
 			
@@ -170,7 +170,7 @@ function glueCPU() {
 	MK85CPU.writeCallback = function (addr, byteVal) {
 		if ((addr >= 0xE800 && addr <= 0xEBFF) || (addr >= 0xFE00 && addr <= 0xFFFF)) {
 			console.log("Non-existent register write", addr.toString(8), "value", byteVal.toString(8))
-			MK85CPU.flag_halt = true;
+			throw MK85CPU.vectors.TRAP_BUS_ERROR
 		}
 		else if (WrRam(addr)) {
 			if((addr>=0x0000)&&(addr<ramLastAddr)) {
