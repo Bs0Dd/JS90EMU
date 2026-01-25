@@ -1,5 +1,5 @@
 CPU.prototype.execVector = function() {
-	console.log("interrupt addr", this.vector.toString(16));
+	console.log("Interrupt, vector address:", this.vector.toString(16));
 	this.vector |= (this.psw&this.flags.H)?(this.sel&0xff00):0;
 	try {
 		/* saving values to stack */
@@ -13,7 +13,7 @@ CPU.prototype.execVector = function() {
 		this.reg_u16[7] = this.access(this.vector, null, false);
 		this.psw = this.access(this.vector+2, null, false);
 
-		if (this.vector == 8)  {console.log("OPERDOL - PSW LULZ", PSW.toString(16), "PC LULZ", PC.toString(16)); return CPU.prototype.halt()};
+		//if (this.vector == 8)  {console.log("Invalid op - PSW:", PSW.toString(16), "PC:", PC.toString(16)); return CPU.prototype.halt()};
 	} catch(e) {
 		if(e == this.vectors.TRAP_BUS_ERROR) {
 			if(this.vector == this.vectors.TRAP_BUS_ERROR) {

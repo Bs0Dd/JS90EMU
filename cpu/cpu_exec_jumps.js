@@ -22,13 +22,6 @@ CPU.prototype.execJSR = function(code) {
 	return CPU.prototype.execCode;
 };
 
-CPU.prototype.execRTS = function(code) {
-	var r = code&7;
-	this.reg_u16[7] = this.reg_u16[r];
-	this.reg_u16[r] = this.addressingIP(0x16, false).ru();
-	return CPU.prototype.execCode;
-};
-
 CPU.prototype.execSOB = function(code) {
 	var r = (code>>6)&7;
 	this.reg_u16[r]--;

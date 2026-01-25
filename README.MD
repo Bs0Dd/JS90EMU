@@ -6,9 +6,7 @@
 
 Based on a heavily modified version of [**JS85EMU**](https://github.com/Bs0Dd/JS85EMU).
 
-*This is a snapshot of the last public beta from 06.03.2025.*
-
-2024, 2025 © Bs0Dd (Compys S&N Systems)
+2024-2026 © Bs0Dd (Compys S&N Systems)
 
 ### JS85EMU based on [js-mk85](https://github.com/KP1533TM2/js-mk85) emulator
 2016 © Alexei Gordeev a.k.a. KP1533TM2

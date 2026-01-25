@@ -121,7 +121,7 @@ function startEmu() {
 			if (SKIPBSTEP){SKIPBSTEP=false;}
 
 			// if (MK85CPU.psw&MK85CPU.flags.H){
-			// 	console.log( "halt at ", MK85CPU.reg_u16[7].toString(16))
+			// 	console.log( "Halt at ", MK85CPU.reg_u16[7].toString(16))
 			// }
 
 			MK85CPU.steps = (typeof DEBUG_STEPS == "number") ? DEBUG_STEPS : SPEED;
@@ -139,22 +139,22 @@ function glueCPU() {
 	var romLastAddr = 0x8000+ROM.length;
 	
 	MK85CPU.readCallback = function (addr) {
-		if (addr >= 0xE800 && addr <= 0xEBFF) { //TRAP 4 on real MK90
+		if ((addr >= 0xE800 && addr <= 0xEBFF) || (addr >= 0xFE00 && addr <= 0xFFFF)) { //TRAP 4 on real MK90
+			console.log("Non-existent register read", addr.toString(8))
 			MK85CPU.flag_halt = true;
 		}
 		else if (((M92_STAT & (1 << 13)) != 0)&&(addr>=0x4000)&&(addr<0x8000)) { // 92 ROM access
 			
-			if (((M92_STAT & (1 << 12)) == 0) && ((M92_STAT & (1 << 11)) == 0)) { // Bank 1
-				//console.log("ACB1");
+			if (((M92_STAT & (1 << 12)) == 0) && ((M92_STAT & (1 << 11)) == 0)) { // ROM 0, Bank 1
+				//console.log("VG6 ROM 0 Bank 1");
 				return ROM92_bank1[addr&0x3FFF];
 			}
-			else if (((M92_STAT & (1 << 12)) == 0) && ((M92_STAT & (1 << 11)) != 0)) { // Bank 2
-				//console.log("ACB2")
+			else if (((M92_STAT & (1 << 12)) == 0) && ((M92_STAT & (1 << 11)) != 0)) { // ROM 0, Bank 2
+				//console.log("VG6 ROM 0 Bank 2")
 				return ROM92_bank2[addr&0x3FFF];
 			}
 
-			//console.log("NOBANK")
-			return 0xFF;
+			//console.log("VG6 NO ROM")
 		}
 		else if (RdRam(addr)) {
 			if((addr>=0x0000)&&(addr<ramLastAddr)) return RAM[addr];
@@ -163,18 +163,18 @@ function glueCPU() {
 			if((rotLastAddr != null)&&(addr>=0x4000)&&(addr<rotLastAddr)) return ROMT[addr&0x3FFF];
 			if((addr>=0x8000)&&(addr<romLastAddr)) return ROM[addr&0x7FFF];
 		}
-		else 
-		return 0xFF;
+
+		return ((addr&1) ? (addr >> 8) : addr) & 0xFF;
 	};
 
 	MK85CPU.writeCallback = function (addr, byteVal) {
-		if (addr >= 0xE800 && addr <= 0xEBFF) {
+		if ((addr >= 0xE800 && addr <= 0xEBFF) || (addr >= 0xFE00 && addr <= 0xFFFF)) {
+			console.log("Non-existent register write", addr.toString(8), "value", byteVal.toString(8))
 			MK85CPU.flag_halt = true;
 		}
 		else if (WrRam(addr)) {
 			if((addr>=0x0000)&&(addr<ramLastAddr)) {
 				RAM[addr] = byteVal;
-				return;
 			}
 		}
 		return;

@@ -13,7 +13,7 @@ window.onload = function() {
 	PAN.panelInit();
 };
 
-var VERVAR = "0.0b7 - build 06.03.2025";
+var VERVAR = "0.0b10 - build 25.01.2026";
 
 var supportsVibrate = "vibrate" in navigator;
 

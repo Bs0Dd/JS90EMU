@@ -28,96 +28,96 @@ function IoWr(index, val) {
     index = (index >> 1) & 0x03;
     IO_DAT[index] = val;
     switch(index) {
-        case 0:
+        case 0: // {data register}
             IO_SRG = val & 0xFFFF;
             IO_RGQ |= 1 << (IO_DAT[2] & 7);
             if (IO_SES) {
-                if ((!stopped) && ((IO_DAT[2] & 0x20) == 0)) { //{if the system isn't stopped and data register interrupts are enabled}
+                if ((!stopped) && ((IO_DAT[2] & 0x20) == 0)) { // {if the system isn't stopped and data register interrupts are enabled}
                     MK85CPU.flag_virq_c4 = true;
                 }
                 var typ = IO_DAT[2] & 0x0F;
                 if (typ == 0){ // SMP0DR
                     IO_SRG = SmpData(0, 0);
                 }
-                else if (typ == 1) { //SMP1DR
+                else if (typ == 1) { // SMP1DR
                     IO_SRG = SmpData(1, 0);
                 }
-                else if (typ == 2) { //KEYB
+                else if (typ == 2) { // KEYB
                     IO_SRG = keyCode();
                 }
-                else if (typ == 3) { //SPEAKER
+                else if (typ == 3) { // SPEAKER
                     IoSpeaker();
                 }
-                else if (typ == 8) { //SMP0DW
+                else if (typ == 8) { // SMP0DW
                     SmpData(0, IO_SRG);
                 }
-                else if (typ == 9) { //SMP1DW
+                else if (typ == 9) { // SMP1DW
                     SmpData(1, IO_SRG);
                 }
-                else if (typ == 11) { //SPEAKER
+                else if (typ == 11) { // SPEAKER
                     IoSpeaker();
                 }
                 else {
-                    console.log("0INVATYP", typ);
+                    console.log("VG4 rg0 write - invalid op type:", typ);
                 }
             }
             break;
-        case 1:
+        case 1: // {transfer rate}
             break
         case 2:
             if (IO_SES) {
-                if ((!stopped) && ((IO_DAT[2] & 0x20) == 0)) { //{if the system isn't stopped and data register interrupts are enabled}
+                if ((!stopped) && ((IO_DAT[2] & 0x20) == 0)) { // {if the system isn't stopped and data register interrupts are enabled}
                     MK85CPU.flag_virq_c4 = true;
                 }
                 var typ = IO_DAT[2] & 0x0F;
                 if (typ == 0){ // SMP0DR
                     IO_SRG = SmpData(0, 0);
                 }
-                else if (typ == 1) { //SMP1DR
+                else if (typ == 1) { // SMP1DR
                     IO_SRG = SmpData(1, 0);
                 }
-                else if (typ == 2) { //KEYB
+                else if (typ == 2) { // KEYB
                     IO_SRG = keyCode();
                 }
-                else if (typ == 3) { //SPEAKER
+                else if (typ == 3) { // SPEAKER
                     IoSpeaker();
                 }
                 else {
-                    console.log("2INVATYP", typ);
+                    console.log("VG4 rg2 write - invalid op type:", typ);
                 }
             }
             break;
-        case 3:
+        case 3: // {command register}
             IO_SES = true;
             IO_SRG = val & 0xFFFF;
             IO_RGQ |= 1 << (IO_DAT[2] & 7);
-            if ((!stopped) && ((IO_DAT[2] & 0x20) == 0)) { //{if the system isn't stopped and data register interrupts are enabled}
+            if ((!stopped) && ((IO_DAT[2] & 0x20) == 0)) { // {if the system isn't stopped and data register interrupts are enabled}
                 MK85CPU.flag_virq_c4 = true;
             }
             var typ = IO_DAT[2] & 0x0F;
             if (typ == 0){ // SMP0CR
                 IO_SRG = SmpCmd(0, 0);
             }
-            else if (typ == 1) { //SMP1CR
+            else if (typ == 1) { // SMP1CR
                 IO_SRG = SmpCmd(1, 0);
             }
-            else if (typ == 2) { //KEYB
+            else if (typ == 2) { // KEYB
                 IO_SRG = keyCode();
             }
-            else if (typ == 3) { //SPEAKER
+            else if (typ == 3) { // SPEAKER
                 IoSpeaker();
             }
-            else if (typ == 8) { //SMP0CW
+            else if (typ == 8) { // SMP0CW
                 SmpCmd(0, IO_SRG);
             }
-            else if (typ == 9) { //SMP1CW
+            else if (typ == 9) { // SMP1CW
                 SmpCmd(1, IO_SRG);
             }
-            else if (typ == 11) { //SPEAKER
+            else if (typ == 11) { // SPEAKER
                 IoSpeaker();
             }
             else {
-                console.log("3INVATYP", typ);
+                console.log("VG4 rg3 write - invalid op type:", typ);
             }
     }
 }
@@ -128,45 +128,45 @@ function IoRd(index) {
     switch(index) {
         case 0: // {data register}
             wrd = IO_SRG;
-            IO_SRG = 0xFFFF; //{default value}
+            IO_SRG = 0xFFFF; // {default value}
             IO_RGQ |= (1 << (IO_DAT[2] & 7));
             if (IO_SES) {
-                if ((!stopped) && ((IO_DAT[2] & 0x20) == 0)) { //{if the system isn't stopped and data register interrupts are enabled}
+                if ((!stopped) && ((IO_DAT[2] & 0x20) == 0)) { // {if the system isn't stopped and data register interrupts are enabled}
                     MK85CPU.flag_virq_c4 = true;
                 }
                 var typ = IO_DAT[2] & 0x0F;
                 if (typ == 0){ // SMP0DR
                     IO_SRG = SmpData(0, 0);
                 }
-                else if (typ == 1) { //SMP1DR
+                else if (typ == 1) { // SMP1DR
                     IO_SRG = SmpData(1, 0);
                 }
-                else if (typ == 2) { //KEYB
+                else if (typ == 2) { // KEYB
                     IO_SRG = keyCode();
                 }
-                else if (typ == 3) { //SPEAKER
+                else if (typ == 3) { // SPEAKER
                     IoSpeaker();
                 }
                 else {
-                    console.log("RINVATYP", typ);
+                    console.log("VG4 rg0 read - invalid op type:", typ);
                 }
             }
             break;
         case 1: // {interrupt request latches}
             wrd = IO_RGQ;
             break;
-        case 2:
+        case 2: // {status register}
             wrd = (IO_DAT[2] & 0x70) | 0xFF84;
             if (!IO_SES) wrd |= 0x08;
             break;
         case 3: // {command register}
-            if (IO_SES && (!stopped) && ((IO_DAT[2] & 0x20) == 0)) { //{if the system isn't stopped and data register interrupts are enabled}
+            if (IO_SES && (!stopped) && ((IO_DAT[2] & 0x20) == 0)) { // {if the system isn't stopped and data register interrupts are enabled}
                 MK85CPU.flag_virq_c4 = true;
             }
             wrd = IO_SRG;
             IO_SES = false;
     }
-    return wrd;
+    return wrd & 0xFF; // Looks like VG4 returns only byte, since AD8-15 lines marked as input only
 }
 
 function TimerIrq() {
@@ -176,7 +176,7 @@ function TimerIrq() {
 function KeyIrq() {
     if (!stopped) {
         IO_RGQ &= ~4;
-        console.log((IO_DAT[2] & 0x10) == 0)
+        //console.log((IO_DAT[2] & 0x10) == 0)
         if ((IO_DAT[2] & 0x10) == 0) MK85CPU.flag_virq_c8 = true;
         else BUFKEY = keyPressed;
     }

@@ -51,39 +51,42 @@ CPU.prototype.access = function(addr,writeVal,isByte) {
 	// if(!isByte && addr&1) {
 	// 	throw this.vectors.TRAP_BUS_ERROR;	// bus error: attempt to read word from odd address
 	// } // TRAP 4
-	// PDP-11 processor on 588 IC's allows to read word from odd address (and do addr-1)?
+	// PDP-11 processor on 588 IC's allows to read word from odd address (ignores A0)
+	// P.S. it's normal for LSI-11 standard on which this processor is based 
 	if(!isByte && addr&1) {
 		addr--;
 	}
 
 	if(writeVal === null) {
-		if ((addr & 0xFF00) == 0xEA00) return RtcRd(addr-0xEA00);
-		if ((addr & 0xFFF8) == 0xE810) return IoRd(addr-0xE810);
+		if ((addr & 0xFF00) == 0xEA00) return (RtcRd((addr >> 1) & 0x3F) << 1) | (addr & 0xFF00);
+		if ((addr & 0xFFF8) == 0xE810) return (IoRd(addr-0xE810)) | (addr & 0xFF00);
 		switch(addr) {
 			case 0xE818:
+				return addr;
 			case 0xE81E:
 				return DockCmdRd();
 			case 0xE81A:
-				return SYREG1 & 0xFFFF;
+				return (SYREG1 & 0xFF00) | (addr & 0xFF);
 			case 0xE81C:
-				return SYREG2 & 0xFFFF;
+				return (SYREG2 & 0xFF00) | (addr & 0xFF);
 			case 0xE880:
 				return DockStatRd();
 			default: return this.readCallback(addr)|(isByte?0:this.readCallback(addr+1)<<8);
 		}
 	} else {
-		if ((addr & 0xFF00) == 0xEA00) return RtcWr(addr-0xEA00, writeVal);
+		if ((addr & 0xFF00) == 0xEA00) return RtcWr((addr >> 1) & 0x3F, writeVal >> 1);
 		if ((addr & 0xFFF8) == 0xE810) return IoWr(addr-0xE810, writeVal);
 		switch(addr) {
 			case 0xE818:
+				return
 			case 0xE81E:
 				return DockCmdWr(writeVal);
 			case 0xE81A: {
-				SYREG1 = writeVal & 0xFFFF;
+				SYREG1 = writeVal & 0xFF00;
 				return 
 			}
 			case 0xE81C: {
-				SYREG2 = writeVal & 0xFFFF;
+				SYREG2 = writeVal & 0xFF00;
 				return 
 			}
 			case 0xE800:
@@ -135,7 +138,7 @@ CPU.prototype.execCode = function() {
 	this.vector = null;
 
 	if ((typeof BREAKPOINT == "number") && BREAKPOINT==this.reg_u16[7] && !SKIPBSTEP) {
-		console.log("STOPE ", BREAKPOINT.toString(16), this.reg_u16[7].toString(16))
+		console.log("Stop at breakpoint", this.reg_u16[7].toString(16))
 		BREAKPOINT = -1;
 		return CPU.prototype.execCode;
 	}
@@ -146,7 +149,7 @@ CPU.prototype.execCode = function() {
 	try {
 		
 		var code=this.access(this.reg_u16[7], null, false);
-		//console.log("code", code.toString(8), "(oct) at IP ", this.reg_u16[7].toString(16), "(hex)");
+		//console.log("Opcode", code.toString(8), "(oct) at IP", this.reg_u16[7].toString(16), "(hex)");
 		if(this.flag_halt||this.flag_evnt||this.flag_virq_c0||this.flag_virq_c4||this.flag_virq_c8||this.flag_halt_i) this.flag_wait = false;
 		if(this.flag_step||((this.psw&this.flags.H)!=0)) this.flag_halt =false;
 		this.step_flag = false;

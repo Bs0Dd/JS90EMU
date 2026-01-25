@@ -105,7 +105,7 @@ function createButtonsOn(svg) {
 			}
 			default:
 			{
-				console.log("unsupported type");
+				console.log("Unsupported button type");
 				break;
 			}
 		}

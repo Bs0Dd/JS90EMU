@@ -5,7 +5,7 @@ CPU.prototype.execHALT = function(code) {
 	//Upon entering the HALT mode the PSW and the PC registers are stored on the
 	//system stack instead of special registers, unlike in the 1801VM1 or 1801VM2 processors.
 
-	console.log("HALT, PC =", this.reg_u16[7].toString(16), ", PSW =",this.psw.toString(16));
+	console.log("HALT op, PC =", this.reg_u16[7].toString(16), ", PSW =",this.psw.toString(16));
 
 	/* saving values to stack */
 	var PSW = this.psw;
@@ -21,30 +21,6 @@ CPU.prototype.execHALT = function(code) {
 	this.reg_u16[7] = this.access(loc, null, false);
 	this.psw = this.access(loc+2, null, false) | this.flags.H;
 	return CPU.prototype.execCode;
-};
-
-CPU.prototype.execGO = function(code) {
-	if(this.psw&this.flags.H) {
-		console.log("GO, PC =", this.cpc.toString(16), ", PSW =",this.cps.toString(16));
-		this.reg_u16[7] = this.cpc;
-		this.psw = this.cps&(~this.flags.H);
-		return CPU.prototype.execCode;
-	} else {
-		throw this.vectors.TRAP_RESERVED_OPCODE;
-	}
-};
-
-
-CPU.prototype.execSTEP = function(code) {
-	if(this.psw&this.flags.H) {
-		this.flag_step = true;
-		this.reg_u16[7] = this.cpc;
-		this.psw &= ~this.flags.H;
-		return CPU.prototype.execCode;
-	} else {
-		console.log("STEP threw a trap");
-		throw this.vectors.TRAP_RESERVED_OPCODE;
-	}
 };
 
 
@@ -67,79 +43,14 @@ CPU.prototype.execRTS = function(code) {
 	return CPU.prototype.execCode;
 };
 
+
 CPU.prototype.execRESET = function(code) {
 	this.flag_reset = true;
 	return CPU.prototype.execCode;
 };
 
+
 CPU.prototype.execRTT = function(code) {
 	this.flag_rtt = true
 	return this.execRTI(code);
 };
-
-CPU.prototype.execRSEL = function(code) {
-	if(this.psw&this.flags.H) {
-		this.reg_u16[0] = this.regSel;
-		return CPU.prototype.execCode;
-	} else {
-		throw this.vectors.TRAP_RESERVED_OPCODE;
-	}
-}
-
-CPU.prototype.execRCPC = function(code) {
-	if(this.psw&this.flags.H) {
-		this.reg_u16[0] = this.cpc;
-		return CPU.prototype.execCode;
-	} else {
-		throw this.vectors.TRAP_RESERVED_OPCODE;
-	}
-}
-
-CPU.prototype.execRCPS = function(code) {
-	if(this.psw&this.flags.H) {
-		this.reg_u16[0] = this.cps;
-		return CPU.prototype.execCode;
-	} else {
-		throw this.vectors.TRAP_RESERVED_OPCODE;
-	}
-}
-
-CPU.prototype.execWCPC = function(code) {
-	if(this.psw&this.flags.H) {
-		this.cpc = this.reg_u16[0];
-		return CPU.prototype.execCode;
-	} else {
-		throw this.vectors.TRAP_RESERVED_OPCODE;
-	}
-}
-
-CPU.prototype.execWCPS = function(code) {
-	if(this.psw&this.flags.H) {
-		this.cps = this.reg_u16[0];
-		return CPU.prototype.execCode;
-	} else {
-		throw this.vectors.TRAP_RESERVED_OPCODE;
-	}
-}
-
-CPU.prototype.execMFUS = function(code) {
-	if(this.psw&this.flags.H) {
-		this.psw = this.cps&(~this.flags.H);
-		this.reg_u16[0] = this.addressingIP(0x15, false).ru();
-		this.psw = this.cps | this.flags.H;
-		return CPU.prototype.execCode;
-	} else {
-		throw this.vectors.TRAP_RESERVED_OPCODE;
-	}
-}
-
-CPU.prototype.execMTUS = function(code) {
-	if(this.psw&this.flags.H) {
-		this.psw = this.cps&(~this.flags.H);
-		this.addressingIP(0x25, false).w(this.reg_u16[0]);
-		this.psw = this.cps | this.flags.H;
-		return CPU.prototype.execCode;
-	} else {
-		throw this.vectors.TRAP_RESERVED_OPCODE;
-	}
-}

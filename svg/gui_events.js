@@ -20,8 +20,7 @@ function keyByCode(keyCode) {
 }
 
 function KBKeyPress(evt) {
-
-	console.log(evt.keyCode.toString(16));
+	console.log("Real keyboard key code:", evt.keyCode.toString(16));
 
 	var key = keyByCode(evt.keyCode);
 	if(typeof key == 'undefined') return;
@@ -57,7 +56,7 @@ function KBKeyPress(evt) {
 	if(keyPressed != key) {
 		keyPressed = key;
 		KeyIrq();
-		console.log("Pressed", key);
+		console.log("Pressed key:", key);
 	}
 }
 
@@ -75,6 +74,7 @@ function KBKeyRelease(evt) {
 
 function GUIKeyPress(evt) {
 	var key = evt.currentTarget.id;
+	console.log("Virtual keyboard key code:", key);
 	if (evt.cancelable) evt.preventDefault();
 	if(supportsVibrate && useVibrate) window.navigator.vibrate(100);
 
@@ -103,10 +103,11 @@ function GUIKeyPress(evt) {
 		return;
 	}
 	
+	// find the key in mapping
 	if(keyPressed != key) {
 		keyPressed = key;
 		KeyIrq();
-		console.log(key);
+		console.log("Pressed key:", key);
 	}
 }
 

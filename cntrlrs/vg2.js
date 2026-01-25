@@ -56,7 +56,7 @@ function SmpSave() {
 function SmpCmd(num, code) {
     if (num > 1) return;
     SMP_CMD[num] = code;
-    //console.log("SMPC", num, "SET", code.toString(16))
+    //console.log("SMP command", num, "set to", code.toString(16))
 }
 
 function SmpData(num, byte) {
@@ -66,7 +66,7 @@ function SmpData(num, byte) {
 
     var retb = 0xFF;
 
-    //console.log("SMPD", num, "OP", SMP_CMD[num].toString(16))
+    //console.log("SMP data", num, "command", SMP_CMD[num].toString(16))
 
     switch(SMP_CMD[num] & 0xF0) {
         case 0x00:
@@ -75,7 +75,8 @@ function SmpData(num, byte) {
         case 0xA0:
             SMP_POS[num] = (SMP_POS[num] << 8) | byte;
             SMP_POS[num] &= (((SMP_CMD[num] & 0xF) == 8) && (SMP_RAM[num].length > 0xFFFF)) ? 0xFFFFFF : 0xFFFF;
-            console.log("SMPD ASET (",SMP_CMD[num].toString(16),SMP_CMD[num] & 0xF,") BYTE", byte.toString(16), "ADDR", SMP_POS[num].toString(16));
+            console.log("SMP data set address (op", SMP_CMD[num].toString(16), ") subcmd", SMP_CMD[num] & 0xF, "byte", byte.toString(16), 
+                        "current addr", SMP_POS[num].toString(16), "CPU PC", MK85CPU.reg_u16[7].toString(16));
             break;
         case 0x10:
         case 0xD0:
@@ -85,7 +86,8 @@ function SmpData(num, byte) {
             if ((SMP_CMD[num] & 0x80) == 0) SMP_POS[num]--;
             else SMP_POS[num]++;
             SMP_POS[num] &= (SMP_RAM[num].length > 0xFFFF) ? 0xFFFFFF : 0xFFFF;
-            console.log("SMPD READ BYTE", retb.toString(16), ((SMP_CMD[num] & 0x80) == 0 ? "PDEC" : "PINC"), "ADDR", SMP_POS[num].toString(16), "PC", MK85CPU.reg_u16[7].toString(16));
+            console.log("SMP data read byte post", retb.toString(16), ((SMP_CMD[num] & 0x80) == 0 ? "decrement" : "increment"),
+                        "current addr", SMP_POS[num].toString(16), "CPU PC", MK85CPU.reg_u16[7].toString(16));
             break;
         case 0x20:
         case 0xC0:
@@ -96,7 +98,8 @@ function SmpData(num, byte) {
             if ((SMP_CMD[num] & 0x20) == 0) SMP_POS[num]++;
             else SMP_POS[num]--;
             SMP_POS[num] &= (SMP_RAM[num].length > 0xFFFF) ? 0xFFFFFF : 0xFFFF;
-            console.log("SMPD WRIT BYTE", byte.toString(16), ((SMP_CMD[num] & 0x20) == 0 ? "PINC" : "PDEC"), "ADDR", SMP_POS[num].toString(16));
+            console.log("SMP data write byte post", byte.toString(16), ((SMP_CMD[num] & 0x20) == 0 ? "increment" : "decrement"),
+                        "current addr", SMP_POS[num].toString(16), "CPU PC", MK85CPU.reg_u16[7].toString(16));
     }
 
     return retb;

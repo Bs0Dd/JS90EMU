@@ -50,17 +50,22 @@ function RtcRealt() {
 }
 
 function RtcFormat(settime) {
-    RTC_RAM = new Uint8Array(64);
+    RTC_RAM = new Uint8Array(64).fill(0xAA);
 
-    RTC_RAM[0x0D] = 0x00;	//{clear the VRT bit}
-    RTC_RAM[0x0C] = 0x00;
-    RTC_RAM[0x0B] = 0x87;	//{ 0x87 in the real machine, but then the emulated one
-                            //expects the time and date to be set, instead of showing the current values
-                            //copied by the code below }
+    RTC_RAM[0x00] = 0x7F;
+    RTC_RAM[0x01] = 0x00;
+    RTC_RAM[0x02] = 0xFF;
+    RTC_RAM[0x03] = 0x00;
+    RTC_RAM[0x04] = 0xFF;
+    RTC_RAM[0x05] = 0x00;
+    RTC_RAM[0x06] = 0xFF;
+    RTC_RAM[0x07] = 0x01;
+    RTC_RAM[0x08] = 0xFF;
+    RTC_RAM[0x09] = 0x01;
     RTC_RAM[0x0A] = 0x7F;
-    RTC_RAM[5] = 0x00;
-    RTC_RAM[3] = 0x00;
-    RTC_RAM[1] = 0x00;
+    RTC_RAM[0x0B] = 0x87;
+    RTC_RAM[0x0C] = 0x00; 
+    RTC_RAM[0x0D] = 0x00;
 
     if (settime) {
       RtcRealt()
@@ -68,20 +73,18 @@ function RtcFormat(settime) {
 }
 
 function RtcRd(index){
-    var index = (index >> 1) & 0x3F;
-    var rtcword = (RTC_RAM[index] << 1) & 0xFFFF;
+    var val = RTC_RAM[index];
     if (index == 0x0D) RTC_RAM[0x0D] = 0x80;	//{set the VRT bit}
     else if (index == 0x0C) RTC_RAM[0x0C] = 0;	//{clear all interrupt flags}
-    return rtcword;
+    return val
 }
 
 function RtcWr(index, val) {
-    index = (index >> 1) & 0x3F;
     if (index > 63) {
         return;
     }
     if ((index != 0x0C) && (index != 0x0D)) {
-        RTC_RAM[index] = val >> 1;
+        RTC_RAM[index] = val;
     }
     if ((index == 0x0A) && (RTC_SRQ != null)) {
         clearInterval(RTC_SRQ);
@@ -203,7 +206,7 @@ function PeIRQr(){ //microseconds
 }
 
 function RtcIrq(){ //default = 31.25ms
-    //console.log("irg", PeIRQr()/1000, "ms")
+    //console.log("VI1 irg", PeIRQr()/1000, "ms")
     if ((!stopped) && ((RTC_RAM[0x0B] & 0x08) != 0)) MK85CPU.flag_evnt = true;	//{the system isn't in the debug mode and bit SQWE in the register B is set}
     RTC_RAM[0x0C] |= 0x40;	//{periodic interrupt flag}
                 //{ set the IRQF interrupt flag and drive the IRQ pin low, if the periodic

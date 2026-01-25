@@ -39,17 +39,17 @@ var PDP11_MNEMS = [
     {	mask:0xFFFF,	op:0x0004,	str:'iot',	kind:PDP11_KINDS.NONE	},
     {	mask:0xFFFF,	op:0x0005,	str:'reset',	kind:PDP11_KINDS.NONE	},
     {	mask:0xFFFF,	op:0x0006,	str:'rtt',	kind:PDP11_KINDS.NONE	},
-    {	mask:0xFFFF,	op:0x000A,	str:'go',	kind:PDP11_KINDS.NONE	},
-    {	mask:0xFFFC,	op:0x0008,	str:'go',	kind:PDP11_KINDS.NONE	},
-    {	mask:0xFFFF,	op:0x000E,	str:'step',	kind:PDP11_KINDS.NONE	},
-    {	mask:0xFFFC,	op:0x000C,	str:'step',	kind:PDP11_KINDS.NONE	},
-    {	mask:0xFFF7,	op:0x0010,	str:'rsel',	kind:PDP11_KINDS.NONE	},
-    {	mask:0xFFFF,	op:0x0011,	str:'mfus',	kind:PDP11_KINDS.NONE	},
-    {	mask:0xFFFE,	op:0x0012,	str:'rcpc',	kind:PDP11_KINDS.NONE	},
-    {	mask:0xFFFC,	op:0x0014,	str:'rcps',	kind:PDP11_KINDS.NONE	},
-    {	mask:0xFFFF,	op:0x0019,	str:'mtus',	kind:PDP11_KINDS.NONE	},
-    {	mask:0xFFFE,	op:0x001A,	str:'wcpc',	kind:PDP11_KINDS.NONE	},
-    {	mask:0xFFFC,	op:0x001C,	str:'wcps',	kind:PDP11_KINDS.NONE	},
+    //{	mask:0xFFFF,	op:0x000A,	str:'go',	kind:PDP11_KINDS.NONE	}, // VM2 only instructions?
+    //{	mask:0xFFFC,	op:0x0008,	str:'go',	kind:PDP11_KINDS.NONE	},
+    //{	mask:0xFFFF,	op:0x000E,	str:'step',	kind:PDP11_KINDS.NONE	},
+    //{	mask:0xFFFC,	op:0x000C,	str:'step',	kind:PDP11_KINDS.NONE	},
+    //{	mask:0xFFF7,	op:0x0010,	str:'rsel',	kind:PDP11_KINDS.NONE	},
+    //{	mask:0xFFFF,	op:0x0011,	str:'mfus',	kind:PDP11_KINDS.NONE	},
+    //{	mask:0xFFFE,	op:0x0012,	str:'rcpc',	kind:PDP11_KINDS.NONE	},
+    //{	mask:0xFFFC,	op:0x0014,	str:'rcps',	kind:PDP11_KINDS.NONE	},
+    //{	mask:0xFFFF,	op:0x0019,	str:'mtus',	kind:PDP11_KINDS.NONE	},
+    //{	mask:0xFFFE,	op:0x001A,	str:'wcpc',	kind:PDP11_KINDS.NONE	},
+    //{	mask:0xFFFC,	op:0x001C,	str:'wcps',	kind:PDP11_KINDS.NONE	},
     {	mask:0xFFE0,	op:0x0000,	str:'illop',	kind:PDP11_KINDS.ILLOP	},
     {	mask:0xFFC0,	op:0x0040,	str:'jmp',	kind:PDP11_KINDS.SINGLE	},
     {	mask:0xFFF8,	op:0x0080,	str:'rts',	kind:PDP11_KINDS.RTS	},
@@ -98,10 +98,10 @@ var PDP11_MNEMS = [
     {	mask:0xFE00,	op:0x7600,	str:'ashc',	kind:PDP11_KINDS.MUL	},
     {	mask:0xFE00,	op:0x7400,	str:'ash',	kind:PDP11_KINDS.MUL	},
     {	mask:0xFE00,	op:0x7800,	str:'xor',	kind:PDP11_KINDS.JSR	},
-    {	mask:0xFFF8,	op:0x7A00,	str:'fadd',	kind:PDP11_KINDS.RTS	},
-    {	mask:0xFFF8,	op:0x7A08,	str:'fsub',	kind:PDP11_KINDS.RTS	},
-    {	mask:0xFFF8,	op:0x7A10,	str:'fmul',	kind:PDP11_KINDS.RTS	},
-    {	mask:0xFFF8,	op:0x7A18,	str:'fdiv',	kind:PDP11_KINDS.RTS	},
+    //{	mask:0xFFF8,	op:0x7A00,	str:'fadd',	kind:PDP11_KINDS.RTS	}, // I think it's VM2 only too
+    //{	mask:0xFFF8,	op:0x7A08,	str:'fsub',	kind:PDP11_KINDS.RTS	},
+    //{	mask:0xFFF8,	op:0x7A10,	str:'fmul',	kind:PDP11_KINDS.RTS	},
+    //{	mask:0xFFF8,	op:0x7A18,	str:'fdiv',	kind:PDP11_KINDS.RTS	},
     {	mask:0xFE00,	op:0x7E00,	str:'sob',	kind:PDP11_KINDS.SOB	},
     {	mask:0xF800,	op:0x7800,	str:'illop',	kind:PDP11_KINDS.ILLOP	},
     {	mask:0xFF00,	op:0x8000,	str:'bpl',	kind:PDP11_KINDS.BR		},
@@ -143,15 +143,15 @@ function FetchWord() {
     var word; 
     if (((M92_STAT & (1 << 13)) != 0)&&(DISADDR>=0x4000)&&(DISADDR<0x8000)) { // 92 ROM access
         if (((M92_STAT & (1 << 12)) == 0) && ((M92_STAT & (1 << 11)) == 0)) { // Bank 1
-            //console.log("D-ACB1");
+            //console.log("Debug read VG6 ROM 0 Bank 1");
             word = (((ROM92_bank1[DISADDR-ROTSTA+1] & 0xFF) << 8) | (ROM92_bank1[DISADDR-ROTSTA] & 0xFF));
         }
         else if (((M92_STAT & (1 << 12)) == 0) && ((M92_STAT & (1 << 11)) != 0)) { // Bank 2
-            //console.log("D-ACB2")
+            //console.log("Debug read VG6 ROM 0 Bank 2")
             word = (((ROM92_bank2[DISADDR-ROTSTA+1] & 0xFF) << 8) | (ROM92_bank2[DISADDR-ROTSTA] & 0xFF));
         }
         else {
-            //console.log("D-NOBANK")
+            //console.log("Debug read VG6 NO ROM")
             word = null;
         }
     }
@@ -174,12 +174,12 @@ function FetchWord() {
 function StoreWord(x) {
     if (((M92_STAT & (1 << 13)) != 0)&&(DISADDR>=0x4000)&&(DISADDR<0x8000)) { // 92 ROM access
         if (((M92_STAT & (1 << 12)) == 0) && ((M92_STAT & (1 << 11)) == 0)) { // Bank 1
-            //console.log("DW-ACB1");
+            //console.log("Debug write VG6 ROM 0 Bank 1");
             ROM92_bank1[DISADDR-ROTSTA+1] = (x>>8) & 0xFF;
             ROM92_bank1[DISADDR-ROTSTA] = x & 0xFF;
         }
         else if (((M92_STAT & (1 << 12)) == 0) && ((M92_STAT & (1 << 11)) != 0)) { // Bank 2
-            //console.log("DW-ACB2")
+            //console.log("Debug write VG6 ROM 0 Bank 1")
             ROM92_bank2[DISADDR-ROTSTA+1] = (x>>8) & 0xFF;
             ROM92_bank2[DISADDR-ROTSTA] = x & 0xFF;
         }

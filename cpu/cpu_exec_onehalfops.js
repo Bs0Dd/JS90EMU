@@ -133,11 +133,3 @@ CPU.prototype.execXOR = function(code) {
 	this.checkBitNZ(this.sp_s16[0]);
 	return CPU.prototype.execCode;
 };
-
-CPU.prototype.execFIS = function(code) {
-	/* floating point instructions: FADD, FMUL, FSUB, FDIV */
-	if(((code&0xe0)==0)&&((this.sel&0x0080)==0)) {
-		this.psw |= this.flags.H;
-		throw this.vectors.TRAP_RESERVED_OPCODE;
-	}
-};

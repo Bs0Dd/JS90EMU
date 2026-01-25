@@ -13,12 +13,12 @@ function DockInit() {
 
 function DockStatWr(val) {
     M92_STAT = val & 0xFFFF;
-    //console.log("M92STAT W:", val.toString(2))
+    //console.log("VG6 status write:", val.toString(2))
 }
 
 function DockCmdWr(val) {
     M92_CMD = val & 0xFFFF;
-    //console.log("M92CMD W:", val.toString(2))
+    //console.log("VG6 command write:", val.toString(2))
 }
 
 function DockStatRd() {
