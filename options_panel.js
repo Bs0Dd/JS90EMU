@@ -26,6 +26,10 @@ function PANEL() {
     var sou = useSound ? "checked" : "";
     var gmar = gameArrows ? "checked" : "";
 
+    var m92sn = (usem92 == 0) ? "checked" : "";
+    var m92s1 = (usem92 == 1) ? "checked" : "";
+    var m92s2 = (usem92 == 2) ? "checked" : "";
+
     if (!DEBUG) {
         console.log = function() {};
     }
@@ -55,7 +59,7 @@ function PANEL() {
             SMP size: <span id="csz"></span>KB&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;New size: <span id="nsz"></span>KB<br>
             <input type="range" id="msiz" onChange="panelUpdNSz()" name="msiz" min="4" max="64" step="2"/>
             <button onClick="panelNewSMP()">New SMP</button><br>
-            <i>BASIC's INIT: 1.0 - 10KB fixed, 2.0 - 62KB max</i><br>`;
+            <i>BASIC's INIT: 1.0 - 10KB fixed, 2.0 - 63.5KB max</i><br>`;
 
     tabcont[1][1] = `
             <button onClick="panelLoadROM(1, 3)">Load BASIC 1.0</button> || <button onClick="panelLoadROM(2, 3)">Load BASIC 2.0</button>&nbsp;&nbsp;<br><br>
@@ -67,7 +71,11 @@ function PANEL() {
     tabcont[2][0] = `Speed: <input type="number" style="width:80px;" min="100" max="1000000" id="sped"
     onkeydown="panelOnEnter(this, event.keyCode, panelSetSP);" onfocus="panelEditFocus()" onblur="panelEditNoFocus()">
     <label for="sped">Op/s</label>
-    <button onClick="panelSetSP()">Set</button> <button onClick="panelResetSP()">Reset</button><br>
+    <button onClick="panelSetSP()">Set</button> <button onClick="panelResetSP()">Reset</button><br><br>
+    MK92 dock:
+    <input type="radio" onchange="usem92=0;panelUpdM92();" id="m92sn" name="mk92" value="m92sn" ${m92sn}><label for="m92sn">None</label>
+    <input type="radio" onchange="usem92=1;panelUpdM92();" id="m92s1" name="mk92" value="m92s1" ${m92s1} disabled><label for="m92s1">Rev. 1.0</label>
+    <input type="radio" onchange="usem92=2;panelUpdM92();" id="m92s2" name="mk92" value="m92s2" ${m92s2}><label for="m92s2">Rev. 2.0</label><br>
     <label for="yfix">B1.0 SMP test fix:</label> <input onchange="panelEnFix1()" type="checkbox" id="yfix1" name="yfix1" ${b1fx}> |
     <label for="yfix">B2.0 year fix:</label> <input onchange="panelEnFix2()" type="checkbox" id="yfix2" name="yfix2" ${b2fx}>
     `
@@ -116,6 +124,14 @@ function PANEL() {
     }
 
     return pnl;
+}
+
+function panelUpdM92() {
+    window.localStorage.setItem('mk90_mk92type', usem92);
+
+    if (usem92 == 2) {
+        alert("Warning: at the moment, only ROM banks are emulated!");
+    }
 }
 
 function panelSetSP(){

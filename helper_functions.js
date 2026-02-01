@@ -104,7 +104,7 @@ function startEmu() {
 	RtcInit();
 	IoInit();
 	SmpInit();
-	DockInit(); 
+	DockInit();
 
 	LCD.timerCallback = function () {
 		MK85CPU.steps = 1;
@@ -140,10 +140,10 @@ function glueCPU() {
 	
 	MK85CPU.readCallback = function (addr) {
 		if ((addr >= 0xE800 && addr <= 0xEBFF) || (addr >= 0xFE00 && addr <= 0xFFFF)) { //TRAP 4 on real MK90
-			console.log("Non-existent register read", addr.toString(8))
-			throw MK85CPU.vectors.TRAP_BUS_ERROR
+			console.log("Non-existent register read", addr.toString(8));
+			throw MK85CPU.vectors.TRAP_BUS_ERROR;
 		}
-		else if (((M92_STAT & (1 << 13)) != 0)&&(addr>=0x4000)&&(addr<0x8000)) { // 92 ROM access
+		else if ((usem92 == 2)&&((M92_STAT & (1 << 13)) != 0)&&(addr>=0x4000)&&(addr<0x8000)) { // 92 ROM access
 			
 			if (((M92_STAT & (1 << 12)) == 0) && ((M92_STAT & (1 << 11)) == 0)) { // ROM 0, Bank 1
 				//console.log("VG6 ROM 0 Bank 1");
@@ -169,8 +169,8 @@ function glueCPU() {
 
 	MK85CPU.writeCallback = function (addr, byteVal) {
 		if ((addr >= 0xE800 && addr <= 0xEBFF) || (addr >= 0xFE00 && addr <= 0xFFFF)) {
-			console.log("Non-existent register write", addr.toString(8), "value", byteVal.toString(8))
-			throw MK85CPU.vectors.TRAP_BUS_ERROR
+			console.log("Non-existent register write", addr.toString(8), "value", byteVal.toString(8));
+			throw MK85CPU.vectors.TRAP_BUS_ERROR;
 		}
 		else if (WrRam(addr)) {
 			if((addr>=0x0000)&&(addr<ramLastAddr)) {

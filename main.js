@@ -13,7 +13,7 @@ window.onload = function() {
 	PAN.panelInit();
 };
 
-var VERVAR = "0.0b10 - build 25.01.2026";
+var VERVAR = "0.0b12 - build 01.02.2026";
 
 var supportsVibrate = "vibrate" in navigator;
 
@@ -50,6 +50,7 @@ var usebast = Number(loadProperty('mk90_bromtv', 2, false));
 var b1fix = loadProperty('mk90_b1fix', true, true);
 var b2fix = loadProperty('mk90_b2fix', true, true);
 var SPEED = loadProperty('mk90_speed', 1200, false);
+var usem92 = Number(loadProperty('mk90_mk92type', 0, false));
 var PAN = new PANEL();
 
 GUI.appendChild(LCD.svg);

@@ -56,46 +56,55 @@ CPU.prototype.access = function(addr,writeVal,isByte) {
 	}
 
 	if(writeVal === null) {
-		if ((addr & 0xFF00) == 0xEA00) return (RtcRd((addr >> 1) & 0x3F) << 1) | (addr & 0xFF00);
-		if ((addr & 0xFFF8) == 0xE810) return (IoRd(addr-0xE810)) | (addr & 0xFF00);
+		if ((addr & 0xFF00) == 0xEA00) // VG4 - ext. dev. addr. decoder: line EA16 (0xEAxx) - VI1 regs.
+			return (RtcRd((addr >> 1) & 0x3F) << 1) | (addr & 0xFF00);
+		if ((addr & 0xFFF8) == 0xE810) // VG4 - I/O registers 
+			return (IoRd(addr-0xE810)) | (addr & 0xFF00);
 		switch(addr) {
-			case 0xE818:
+			case 0xE818: // VG4 - ext. dev. addr. decoder: empty RPLY
 				return addr;
-			case 0xE81E:
-				return DockCmdRd();
-			case 0xE81A:
-				return (SYREG1 & 0xFF00) | (addr & 0xFF);
-			case 0xE81C:
-				return (SYREG2 & 0xFF00) | (addr & 0xFF);
-			case 0xE880:
-				return DockStatRd();
-			default: return this.readCallback(addr)|(isByte?0:this.readCallback(addr+1)<<8);
+			case 0xE81A: // VG4 - ext. dev. addr. decoder: line CS101 - VG5 register RG1
+				return ((SYREG1 & 0xFF00) | (addr & 0xFF));
+			case 0xE81C: // VG4 - ext. dev. addr. decoder: line CS110 - VG5 register RG2
+				return ((SYREG2 & 0xFF00) | (addr & 0xFF));
+			case 0xE81E: // VG4 - ext. dev. addr. decoder: line CS111 - MK92 2.0 4th VA1 (vg6.js)
+				return ((usem92 == 2) ? ((DockAvalRd() & 0xC082) | (addr & 0x3F7D)) : addr);
+			case 0xE880: // VG6 (MK92 2.0) - status register
+				if (usem92 == 2) return DockStatRd(); else throw CPU.prototype.vectors.TRAP_BUS_ERROR;
+			case 0xE882: // VG6 (MK92 2.0) - command register
+				if (usem92 == 2) return DockCmdRd(); else throw CPU.prototype.vectors.TRAP_BUS_ERROR;
+			default: // Memory access
+				return this.readCallback(addr)|(isByte?0:this.readCallback(addr+1)<<8);
 		}
 	} else {
-		if ((addr & 0xFF00) == 0xEA00) return RtcWr((addr >> 1) & 0x3F, writeVal >> 1);
-		if ((addr & 0xFFF8) == 0xE810) return IoWr(addr-0xE810, writeVal);
+		if ((addr & 0xFF00) == 0xEA00) // VG4 - ext. dev. addr. decoder: line EA16 (0xEAxx) - VI1 regs.
+			return RtcWr((addr >> 1) & 0x3F, writeVal >> 1);
+		if ((addr & 0xFFF8) == 0xE810) // VG4 - I/O registers 
+			return IoWr(addr-0xE810, writeVal);
 		switch(addr) {
-			case 0xE818:
-				return
-			case 0xE81E:
-				return DockCmdWr(writeVal);
-			case 0xE81A: {
+			case 0xE818: // VG4 - ext. dev. addr. decoder: empty RPLY
+				return;
+			case 0xE81A: { // VG4 - ext. dev. addr. decoder: line CS101 - VG5 register RG1
 				SYREG1 = writeVal & 0xFF00;
-				return 
+				return;
 			}
-			case 0xE81C: {
+			case 0xE81C: { // VG4 - ext. dev. addr. decoder: line CS110 - VG5 register RG2
 				SYREG2 = writeVal & 0xFF00;
-				return 
+				return;
 			}
-			case 0xE800:
-			case 0xE801:
-			case 0xE802:
-			case 0xE803: {
+			case 0xE81E: // VG4 - ext. dev. addr. decoder: line CS111 - MK92 2.0 4th VA1 (VG6.js)
+				return;
+			case 0xE800: // VG3 (WR only) - screen address register
+			case 0xE801: // VG3 (WR only) - configuration register
+			case 0xE802: // VG3 (WR only) - screen address lower byte
+			case 0xE803: { // VG3 (WR only) - configuration lower byte
 				return LcdWr(addr-0xE800, writeVal);
 			}
-			case 0xE880:
-				return DockStatWr(writeVal);
-			default: {
+			case 0xE880: // VG6 (MK92 2.0) - status register
+				if (usem92 == 2) return DockStatWr(writeVal); else throw CPU.prototype.vectors.TRAP_BUS_ERROR;
+			case 0xE882: // VG6 (MK92 2.0) - command register
+				if (usem92 == 2) return DockCmdWr(writeVal); else throw CPU.prototype.vectors.TRAP_BUS_ERROR;
+			default: { // Memory access
 				this.writeCallback(addr,writeVal&0xFF);
 				if(!isByte) this.writeCallback(addr+1,(writeVal>>8)&0xFF);
 				return null;
