@@ -73,6 +73,10 @@ CPU.prototype.access = function(addr,writeVal,isByte) {
 				if (usem92 == 2) return DockStatRd(); else throw CPU.prototype.vectors.TRAP_BUS_ERROR;
 			case 0xE882: // VG6 (MK92 2.0) - command register
 				if (usem92 == 2) return DockCmdRd(); else throw CPU.prototype.vectors.TRAP_BUS_ERROR;
+			case 0xFF4C: // BASIC 1.0 ACPU status register
+				if (koiprint) return (ACPU.ready() | (addr & 0xFF00)); else throw CPU.prototype.vectors.TRAP_BUS_ERROR;
+			case 0xFF4E: // BASIC 1.0 ACPU data register
+				if (koiprint) return addr; else throw CPU.prototype.vectors.TRAP_BUS_ERROR;
 			default: // Memory access
 				return this.readCallback(addr)|(isByte?0:this.readCallback(addr+1)<<8);
 		}
@@ -104,6 +108,10 @@ CPU.prototype.access = function(addr,writeVal,isByte) {
 				if (usem92 == 2) return DockStatWr(writeVal); else throw CPU.prototype.vectors.TRAP_BUS_ERROR;
 			case 0xE882: // VG6 (MK92 2.0) - command register
 				if (usem92 == 2) return DockCmdWr(writeVal); else throw CPU.prototype.vectors.TRAP_BUS_ERROR;
+			case 0xFF4C: // BASIC 1.0 ACPU status register
+				if (koiprint) return; else throw CPU.prototype.vectors.TRAP_BUS_ERROR;
+			case 0xFF4E: // BASIC 1.0 ACPU data register
+				if (koiprint) return ACPU.print(writeVal & 0xFF); else throw CPU.prototype.vectors.TRAP_BUS_ERROR;
 			default: { // Memory access
 				this.writeCallback(addr,writeVal&0xFF);
 				if(!isByte) this.writeCallback(addr+1,(writeVal>>8)&0xFF);

@@ -80,8 +80,8 @@ function PANEL() {
     <label for="yfix">B2.0 year fix:</label> <input onchange="panelEnFix2()" type="checkbox" id="yfix2" name="yfix2" ${b2fx}>
     `
 
-    tabcont[2][1] = `<button onClick="panelOpenLay()">Keyboard layout</button> <button onClick="panelOpenDbg()">Debugger</button>
-    <button onClick="panelOpenHelp()">Help</button> <button onClick="panelOpenInfo()">About</button><br>
+    tabcont[2][1] = `<button onClick="panelOpenLay()">Keyboard layout</button> <button onClick="panelOpenPrt()">ACPU 1.0</button>
+    <button onClick="panelOpenDbg()">Debugger</button> <button onClick="panelOpenHelp()">Help</button> <button onClick="panelOpenInfo()">About</button><br>
     <label for="dbgm">Show debug messages in console:</label> <input type="checkbox" onChange="panelSWDbgMsg()" id="dbgm" name="dbgm" ${dbgm}><br>
     <label for="gmar">Tsvetotron arrows layout:</label> <input type="checkbox" onChange="panelSwGmar()" id="gmar" name="gmar" ${gmar}>`;
 
@@ -124,6 +124,12 @@ function PANEL() {
     }
 
     return pnl;
+}
+
+function panelOpenPrt() {
+    const hidp = document.getElementById("mk90_acpu_int");
+    hidp.style.display = (hidp.style.display == "none") ? "" : "none";
+    document.getElementById("mk90_acpu_br").style.display = hidp.style.display;
 }
 
 function panelUpdM92() {

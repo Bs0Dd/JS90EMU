@@ -10,10 +10,11 @@ window.onload = function() {
 	document.getElementById("mk90").appendChild(GUI);
 	document.getElementById("mk90_panel").appendChild(PAN);
 	document.getElementById("mk90_dbg").appendChild(DBG);
+	document.getElementById("mk90_acpu").appendChild(ACPU);
 	PAN.panelInit();
 };
 
-var VERVAR = "0.0b12 - build 01.02.2026";
+var VERVAR = "0.0b14 - build 03.02.2026";
 
 var supportsVibrate = "vibrate" in navigator;
 
@@ -51,6 +52,9 @@ var b1fix = loadProperty('mk90_b1fix', true, true);
 var b2fix = loadProperty('mk90_b2fix', true, true);
 var SPEED = loadProperty('mk90_speed', 1200, false);
 var usem92 = Number(loadProperty('mk90_mk92type', 0, false));
+var koiprint = loadProperty('mk90_koiprinter', false, true);
+
+var ACPU = new ACPUPRINT();
 var PAN = new PANEL();
 
 GUI.appendChild(LCD.svg);

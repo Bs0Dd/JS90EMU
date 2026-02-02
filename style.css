@@ -37,6 +37,20 @@
    padding-bottom: 10px;*/
 }
 
+#mk90_acpu {
+   width : 790px;
+}
+
+#mk90_acpu_int {
+   width : 400px;
+   border : 1px solid black;
+   background-color : gainsboro;
+   padding-top: 10px;
+   padding-bottom: 10px;
+   margin-left: auto;
+   margin-right: auto;
+}
+
 #dbg_actions td {
   padding : 5px 10px 5px 10px;
   border : 1px solid black;
